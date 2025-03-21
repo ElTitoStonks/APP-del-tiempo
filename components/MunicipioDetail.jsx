@@ -1,10 +1,16 @@
 import { useParams } from "react-router-dom"
 import { useProvincias } from "../services/dataProvincias"
+import { ShowMunicipios } from "./ShowMunicipios"
 
-export function MunicipioDetail() {
+export function MunicipioDetail({ max, min }) {
     const { municipiosTarget, loading } = useProvincias()
-    console.log(municipiosTarget)
     const { city, municipio } = useParams()
 
-    return <div>Municipio: {municipio} en {city}</div>
+    return (
+        <div className="text-sm">
+            {/* Ajusta esta línea según la estructura real de la API */}
+            {/* <ShowMunicipios max={municipiosTarget.temperaturas?.max}
+                min={municipiosTarget.temperaturas?.min} /> */}
+        </div>
+    )
 }

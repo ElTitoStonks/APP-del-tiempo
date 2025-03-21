@@ -5,13 +5,14 @@ import { CitySelected, SelectCity } from '../components/SelectCity'
 import { useProvincias } from '../services/dataProvincias'
 import './App.css'
 import { PresentationForm } from "../components/PresentationForm";
-import { ShowMunicipios } from "../components/ShowMunicipios";
 import { MunicipioDetail } from "../components/MunicipioDetail";
 
 function App() {
   const { provincias, loading } = useProvincias()
   const [city, setCity] = useState('')
   const [municipio, setMunicipio] = useState('')
+
+  console.log(city)
   
   return (
     <div className="md:w-1/2 w-[80%] pt-7 mx-auto font-monserrat" >
