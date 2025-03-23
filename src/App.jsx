@@ -11,8 +11,6 @@ function App() {
   const { provincias, loading } = useProvincias()
   const [city, setCity] = useState('')
   const [municipio, setMunicipio] = useState('')
-
-  console.log(city)
   
   return (
     <div className="md:w-1/2 w-[80%] pt-7 mx-auto font-monserrat" >

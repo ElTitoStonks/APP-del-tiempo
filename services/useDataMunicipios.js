@@ -8,6 +8,7 @@ export function useDataMunicipios() {
     const [municipios, setMunicipios] = useState([])
     const [loading, setLoading] = useState(true)
     const { city } = useParams()
+    
     useEffect(() => {
         if (city) {
             const fetchMunicipios = async () => {
