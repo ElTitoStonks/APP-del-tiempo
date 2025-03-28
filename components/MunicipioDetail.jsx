@@ -77,7 +77,7 @@ export function MunicipioDetail() {
 
 
     function ShowWeatherToday() {
-        const morning = 7
+
         const responsive = {
             superLargeDesktop: {
                 // the naming can be any, depends on you.
@@ -102,21 +102,12 @@ export function MunicipioDetail() {
             return <p>Cargando los elementos</p>
         }
 
-        // function ShowAllTemps() {
-        //     const morningTemp = 8
-        //     return (
-        //         municipiosTarget.pronostico?.hoy?.temperatura?.map((item, index) => {
-        //             const aproxTime = morningTemp + index
-        //             const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime
-        //             console.log(formatTime)
-        //             return (
-        //                 <p key={index}>{item}º</p>
-        //             )
+        if (!municipiosTarget.pronostico?.manana?.estado_cielo_descripcion) {
+            return <p>Cargando los elementos</p>
+        }
 
-        //         })
 
-        //     )
-        // }
+
         return (
             <Carousel responsive={responsive}
                 draggable={true}
@@ -124,22 +115,45 @@ export function MunicipioDetail() {
                 centerMode={true}
                 className="">
                 {municipiosTarget.pronostico.hoy.estado_cielo_descripcion.map((item, index) => {
+                    const morning = 7
                     const aproxTime = morning + index
-                    const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime
+                    const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime.toString()
                     const aproxTemp = municipiosTarget.pronostico.hoy.temperatura[index]
                     const aproxRain = municipiosTarget.pronostico.hoy.precipitacion[index]
                     const aproxWindDirection = municipiosTarget.pronostico.hoy.viento[index]?.direccion
                     const aproxWindSpeed = municipiosTarget.pronostico.hoy.viento[index]?.velocidad
+                    const ocaso = municipiosTarget.pronostico.hoy['@attributes'].ocaso
+                    const orto = municipiosTarget.pronostico.hoy['@attributes'].orto
                     return (
                         <div className="bg-red-50">
                             <p>{formatTime}:00</p>
                             <ChangeIconsAccordingToTheWeather
-                                weather={item}
+                                weather={item} time={aproxTime} ocaso={ocaso} orto={orto}
                             />
                             <p>{aproxTemp}º</p>
                             <p>{aproxRain} %</p>
                             <p>{aproxWindDirection} {aproxWindSpeed} km/h</p>
-                            
+                        </div>
+                    )
+                })}
+
+                {municipiosTarget.pronostico.manana.estado_cielo_descripcion.map((item, index) => {
+                    const nextDayNight = 0 + index
+                    const nextDayNightFormat = nextDayNight > 23 ? nextDayNight - 24 : nextDayNight.toString().padStart(2, '0')
+                    const nextDayTemp = municipiosTarget.pronostico.manana.temperatura[index]
+                    const nextDayRain = municipiosTarget.pronostico.manana.precipitacion[index]
+                    const nextDayWindDirection = municipiosTarget.pronostico.manana.viento[index]?.direccion
+                    const nextDayWindSpeed = municipiosTarget.pronostico.manana.viento[index]?.velocidad
+                    
+                    return (
+                        <div className="bg-red-50">
+                            <p>{nextDayNightFormat}:00</p>
+                            <ChangeIconsAccordingToTheWeather
+                                weather={item}
+                            />
+                            <p>{nextDayTemp}º</p>
+                            <p>{nextDayRain}%</p>
+                            <p>{nextDayWindDirection} {nextDayWindSpeed} km/h</p>
                         </div>
                     )
                 })}
