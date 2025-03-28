@@ -4,6 +4,8 @@ import { ChangeIconsAccordingToTheWeather } from "./ChangeIconsAccordingToTheWea
 import { Humidity } from './icons/Humidity'
 import { Windy } from "./icons/Windy"
 import { Rain } from "./icons/Rain"
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
 export function MunicipioDetail() {
     const { municipiosTarget, loading } = useProvincias()
@@ -12,7 +14,13 @@ export function MunicipioDetail() {
     const tiempo = Date.now();
     const tiempoHoy = new Date(tiempo)
 
+    if (loading) {
+        return <p>Cargando...</p>
+    }
+
     function ShowMunicipiosDetails() {
+
+        const noRain = municipiosTarget.lluvia === '' ? '0' : municipiosTarget.lluvia
 
         return (
             <div className="mt-2 border border-[#0E0E52] rounded-lg p-2 bg-[#0E0E52]/20 shadow-[4px_6px_6px_0px_rgba(0,0,0,0.25)]
@@ -60,17 +68,89 @@ export function MunicipioDetail() {
                     bg-[#150578] rounded-md h-20 w-20 justify-center">
                         <Rain />
                         <p className="font-light">Lluvia</p>
-                        <p className="font-bold">{municipiosTarget.lluvia} %</p>
+                        <p className="font-bold">{noRain} %</p>
                     </div>
                 </div>
             </div>
         )
     }
 
+
+    function ShowWeatherToday() {
+        const morning = 7
+        const responsive = {
+            superLargeDesktop: {
+                // the naming can be any, depends on you.
+                breakpoint: { max: 4000, min: 3000 },
+                items: 5
+            },
+            desktop: {
+                breakpoint: { max: 3000, min: 1024 },
+                items: 3
+            },
+            tablet: {
+                breakpoint: { max: 1024, min: 464 },
+                items: 2
+            },
+            mobile: {
+                breakpoint: { max: 464, min: 0 },
+                items: 2
+            }
+        }
+
+        if (!municipiosTarget.pronostico?.hoy?.estado_cielo_descripcion) {
+            return <p>Cargando los elementos</p>
+        }
+
+        // function ShowAllTemps() {
+        //     const morningTemp = 8
+        //     return (
+        //         municipiosTarget.pronostico?.hoy?.temperatura?.map((item, index) => {
+        //             const aproxTime = morningTemp + index
+        //             const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime
+        //             console.log(formatTime)
+        //             return (
+        //                 <p key={index}>{item}º</p>
+        //             )
+
+        //         })
+
+        //     )
+        // }
+        return (
+            <Carousel responsive={responsive}
+                draggable={true}
+                removeArrowOnDeviceType={["tablet", "mobile"]}
+                centerMode={true}
+                className="">
+                {municipiosTarget.pronostico.hoy.estado_cielo_descripcion.map((item, index) => {
+                    const aproxTime = morning + index
+                    const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime
+                    const aproxTemp = municipiosTarget.pronostico.hoy.temperatura[index]
+                    const aproxRain = municipiosTarget.pronostico.hoy.precipitacion[index]
+                    const aproxWindDirection = municipiosTarget.pronostico.hoy.viento[index]?.direccion
+                    const aproxWindSpeed = municipiosTarget.pronostico.hoy.viento[index]?.velocidad
+                    return (
+                        <div className="bg-red-50">
+                            <p>{formatTime}:00</p>
+                            <ChangeIconsAccordingToTheWeather
+                                weather={item}
+                            />
+                            <p>{aproxTemp}º</p>
+                            <p>{aproxRain} %</p>
+                            <p>{aproxWindDirection} {aproxWindSpeed} km/h</p>
+                            
+                        </div>
+                    )
+                })}
+            </Carousel>
+        )
+    }
+
     return (
         <section>
             <ShowMunicipiosDetails />
+            <ShowWeatherToday />
         </section>
     )
 }
-

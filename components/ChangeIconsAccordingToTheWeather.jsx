@@ -14,7 +14,7 @@ export function ChangeIconsAccordingToTheWeather({ weather }) {
         return <Cloudy />
     } else if (stateSky === 'Poco nuboso') {
         return <LittleCloudyDay />
-    } else if (stateSky === 'Nubes altas') {
+    } else if (stateSky === 'Despejado') {
         return <Sunny />
     }
 
