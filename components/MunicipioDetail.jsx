@@ -10,8 +10,6 @@ import 'react-multi-carousel/lib/styles.css';
 
 export function MunicipioDetail() {
     const { municipiosTarget, loading } = useProvincias()
-    const { city, municipio } = useParams()
-    console.log(municipiosTarget)
     const tiempo = Date.now();
     const tiempoHoy = new Date(tiempo)
 
@@ -50,7 +48,7 @@ export function MunicipioDetail() {
                     </div>
                 </div>
 
-                <div className="flex justify-between px-4 text-sm">
+                <div className="flex justify-between sm:justify-around md:justify-center md:gap-10 px-4 text-sm">
                     <div className="flex flex-col items-center 
                     bg-[#150578] rounded-md h-20 w-20 justify-center">
                         <Humidity />
@@ -91,7 +89,8 @@ export function MunicipioDetail() {
             },
             tablet: {
                 breakpoint: { max: 1024, min: 464 },
-                items: 2
+                items: 3,
+                partialVisibilityGutter: 30
             },
             mobile: {
                 breakpoint: { max: 464, min: 0 },
