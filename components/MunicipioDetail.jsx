@@ -4,6 +4,7 @@ import { ChangeIconsAccordingToTheWeather } from "./ChangeIconsAccordingToTheWea
 import { Humidity } from './icons/Humidity'
 import { Windy } from "./icons/Windy"
 import { Rain } from "./icons/Rain"
+import { Umbrella } from "./icons/Umbrella"
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
@@ -94,7 +95,8 @@ export function MunicipioDetail() {
             },
             mobile: {
                 breakpoint: { max: 464, min: 0 },
-                items: 2
+                items: 2,
+                partialVisibilityGutter: 30
             }
         }
 
@@ -106,58 +108,71 @@ export function MunicipioDetail() {
             return <p>Cargando los elementos</p>
         }
 
+        function GetMunicipiosTargetPronosticoHoy() {
+            return (
+                <Carousel responsive={responsive}
+                    draggable={true}
+                    removeArrowOnDeviceType={["tablet", "mobile"]}
+                    partialVisible={true}
+                    centerMode={false}
+                    className="mt-2 h-44 border rounded-xl">
+                    {municipiosTarget.pronostico.hoy.estado_cielo_descripcion.map((item, index) => {
+                        const morning = 7
+                        const aproxTime = morning + index
+                        const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime.toString()
+                        const aproxTemp = municipiosTarget.pronostico.hoy.temperatura[index]
+                        const aproxRain = municipiosTarget.pronostico.hoy.precipitacion[index]
+                        const aproxWindDirection = municipiosTarget.pronostico.hoy.viento[index]?.direccion
+                        const aproxWindSpeed = municipiosTarget.pronostico.hoy.viento[index]?.velocidad
+                        const ocaso = municipiosTarget.pronostico.hoy['@attributes'].ocaso
+                        const orto = municipiosTarget.pronostico.hoy['@attributes'].orto
+                        return (
+                            <div className="bg-[#0E0E52]/20  h-44  grid-rows-4 grid content-center  justify-center items-center text-center text-[#FAFAFA]">
+                                <p className="">{formatTime}:00</p>
+                                <div className="flex justify-center">
+                                    <ChangeIconsAccordingToTheWeather
+                                        weather={item} time={aproxTime} ocaso={ocaso} orto={orto}
+                                    />
+                                </div>
+                                <p className="">{aproxTemp}º</p>
+                                <p className="flex justify-center gap-1"><Umbrella /> {aproxRain} %</p>
+                                <p className="flex justify-center items-center"><Windy /> {aproxWindDirection} {aproxWindSpeed} km/h</p>
+                            </div>
+                        )
+                    })}
+
+                    {municipiosTarget.pronostico.manana.estado_cielo_descripcion.map((item, index) => {
+                        const nextDayNight = 0 + index
+                        const nextDayNightFormat = nextDayNight > 23 ? nextDayNight - 24 : nextDayNight.toString().padStart(2, '0')
+                        const nextDayTemp = municipiosTarget.pronostico.manana.temperatura[index]
+                        const nextDayRain = municipiosTarget.pronostico.manana.precipitacion[index]
+                        const nextDayWindDirection = municipiosTarget.pronostico.manana.viento[index]?.direccion
+                        const nextDayWindSpeed = municipiosTarget.pronostico.manana.viento[index]?.velocidad
+                        const ocasoNextDay = municipiosTarget.pronostico.manana['@attributes'].ocaso
+                        const ortoNextDay = municipiosTarget.pronostico.manana['@attributes'].orto
+
+                        return (
+                            <div className="bg-[#0E0E52]/20  h-44  grid-rows-4 grid content-center  justify-center items-center text-center text-[#FAFAFA]">
+                                <p>{nextDayNightFormat}:00</p>
+                                <div className="flex justify-center">
+                                    <ChangeIconsAccordingToTheWeather
+                                        weather={item} timeNextDay={nextDayNight} ocasoNexDay={ocasoNextDay}
+                                        ortoNextDay={ortoNextDay}
+                                    />
+                                </div>
+                                <p>{nextDayTemp}º</p>
+                                <p className="flex justify-center gap-1"><Umbrella /> {nextDayRain}%</p>
+                                <p className="flex justify-center items-center"> <Windy />{nextDayWindDirection} {nextDayWindSpeed} km/h</p>
+                            </div>
+                        )
+                    })}
+                </Carousel>
+            )
+        }
 
 
         return (
-            <Carousel responsive={responsive}
-                draggable={true}
-                removeArrowOnDeviceType={["tablet", "mobile"]}
-                centerMode={true}
-                className="">
-                {municipiosTarget.pronostico.hoy.estado_cielo_descripcion.map((item, index) => {
-                    const morning = 7
-                    const aproxTime = morning + index
-                    const formatTime = aproxTime > 23 ? aproxTime - 24 : aproxTime.toString()
-                    const aproxTemp = municipiosTarget.pronostico.hoy.temperatura[index]
-                    const aproxRain = municipiosTarget.pronostico.hoy.precipitacion[index]
-                    const aproxWindDirection = municipiosTarget.pronostico.hoy.viento[index]?.direccion
-                    const aproxWindSpeed = municipiosTarget.pronostico.hoy.viento[index]?.velocidad
-                    const ocaso = municipiosTarget.pronostico.hoy['@attributes'].ocaso
-                    const orto = municipiosTarget.pronostico.hoy['@attributes'].orto
-                    return (
-                        <div className="bg-red-50">
-                            <p>{formatTime}:00</p>
-                            <ChangeIconsAccordingToTheWeather
-                                weather={item} time={aproxTime} ocaso={ocaso} orto={orto}
-                            />
-                            <p>{aproxTemp}º</p>
-                            <p>{aproxRain} %</p>
-                            <p>{aproxWindDirection} {aproxWindSpeed} km/h</p>
-                        </div>
-                    )
-                })}
-
-                {municipiosTarget.pronostico.manana.estado_cielo_descripcion.map((item, index) => {
-                    const nextDayNight = 0 + index
-                    const nextDayNightFormat = nextDayNight > 23 ? nextDayNight - 24 : nextDayNight.toString().padStart(2, '0')
-                    const nextDayTemp = municipiosTarget.pronostico.manana.temperatura[index]
-                    const nextDayRain = municipiosTarget.pronostico.manana.precipitacion[index]
-                    const nextDayWindDirection = municipiosTarget.pronostico.manana.viento[index]?.direccion
-                    const nextDayWindSpeed = municipiosTarget.pronostico.manana.viento[index]?.velocidad
-                    
-                    return (
-                        <div className="bg-red-50">
-                            <p>{nextDayNightFormat}:00</p>
-                            <ChangeIconsAccordingToTheWeather
-                                weather={item}
-                            />
-                            <p>{nextDayTemp}º</p>
-                            <p>{nextDayRain}%</p>
-                            <p>{nextDayWindDirection} {nextDayWindSpeed} km/h</p>
-                        </div>
-                    )
-                })}
-            </Carousel>
+            <GetMunicipiosTargetPronosticoHoy />
         )
     }
 
